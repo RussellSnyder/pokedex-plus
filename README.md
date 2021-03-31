@@ -26,10 +26,10 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
-## TODOs
+## Programming TODOs
 
-- [ ] Application Route scaffolding
-- [ ] Test Application Route scaffolding
+- [x] Application Route scaffolding
+- [x] Test Application Route scaffolding
 - [ ] Application Data fetching - 1
 - [ ] Test application data fetching
 - [ ] Pokemon Overview table 1 - Basic
@@ -46,4 +46,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - [ ] test
 - [ ] Pokemon Overview - view presets (what columns to display)
 - [ ] test
+- [ ] Add types to pokeapi-js-wrapper
+
+## Notes
+
+- Chicken and egg: rework backend or model on frontend. Safer to add layer of abstraction -> Data layer
 
