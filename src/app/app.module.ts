@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { PokemonOverviewComponent } from './features/pokemon-overview/pokemon-overview.component';
 import { PokemonDetailComponent } from './features/pokemon-detail/pokemon-detail.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
+import { PokedexApiService } from './services/pokedex-api.service';
 
 @NgModule({
   declarations: [
@@ -16,9 +17,9 @@ import { NotFoundComponent } from './features/not-found/not-found.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
-  providers: [],
+  providers: [PokedexApiService],
   bootstrap: [AppComponent],
   exports: [PokemonOverviewComponent]
 })
