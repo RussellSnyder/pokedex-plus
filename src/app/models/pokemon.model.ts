@@ -36,7 +36,7 @@ export interface PokemonMove {
   version_group_details: VersionGroupDetail[],
 }
 
-export interface PokemonSpriteTypes {
+export interface PokemonSprite {
   back_default?: string,
   back_female?: string,
   back_shiny?: string,
@@ -47,11 +47,22 @@ export interface PokemonSpriteTypes {
   front_shiny_female?: string,
 }
 
-export interface PokemonSprite extends PokemonSpriteTypes {
-  versions: {
-    [key: string]: PokemonSpriteTypes
-  }
+export interface VersionPokemonSprite {
+  [key: string]: PokemonSprite
 }
+
+export interface OtherPokemonSprite {
+  [key: string]: PokemonSprite
+}
+
+export interface MainPokemonSprite extends PokemonSprite {}
+
+export interface PokemonSpriteSet {
+  main: MainPokemonSprite
+  other: OtherPokemonSprite,
+  versions: VersionPokemonSprite,
+}
+
 
 export interface PokemonStat {
   base_stat: number,
@@ -79,7 +90,7 @@ export interface IPokemon {
   locationAreaEncounters: string,
   moves: PokemonMove[],
   species: NameAndUrl[],
-  sprites: PokemonSprite[],
+  sprites: PokemonSpriteSet,
   stats: PokemonStat[],
   types: PokemonType[],
   weight: number,
@@ -101,7 +112,7 @@ export class Pokemon implements IPokemon {
   locationAreaEncounters: string;
   moves: PokemonMove[];
   species: NameAndUrl[];
-  sprites: PokemonSprite[];
+  sprites: PokemonSpriteSet;
   stats: PokemonStat[];
   types: PokemonType[];
   weight: number;
@@ -121,9 +132,46 @@ export class Pokemon implements IPokemon {
     this.locationAreaEncounters = initialState.location_area_encounters;
     this.moves = initialState.moves;
     this.species = initialState.species;
-    this.sprites = initialState.sprites;
+    // this.sprites = initialState.sprites;
+    this.sprites = this._cleanSprites(initialState.sprites);
     this.stats = initialState.stats;
     this.types = initialState.types;
     this.weight = initialState.weight;
   }
+
+  private _cleanSprites(dirtySprites: PokemonSpriteSet): PokemonSpriteSet {
+    const main = this._removeEmptyFromTree(dirtySprites, true);
+    const other = this._removeEmptyFromTree(dirtySprites.other);
+    const versions = this._removeEmptyFromTree(dirtySprites.versions);
+
+    return {
+      main: main as MainPokemonSprite,
+      other: other as OtherPokemonSprite,
+      versions: versions as VersionPokemonSprite,
+    }
+  }
+
+  _removeEmptyFromTree(sprite: any, oneLevelOnly = false): any {
+    const clean: any = {};
+
+    if (!sprite) return clean;
+
+    Object.entries(sprite).forEach(([key, value]) => {
+      if (!value || !key) return;
+
+      if (typeof value === 'string') {
+        clean[key] = value;
+      }
+
+      if (oneLevelOnly) return;
+
+      if (typeof value === 'object') {
+        const cleanChild = this._removeEmptyFromTree(value)
+        clean[key] = cleanChild;
+      }
+    });
+
+    return clean
+  }
+
 }

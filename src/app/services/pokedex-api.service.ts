@@ -1,11 +1,19 @@
 import { Injectable } from '@angular/core';
 // @ts-ignore-next-line
 import * as PokeApiWrapper from 'pokeapi-js-wrapper';
-import { GameIndex, Item, NameAndUrl, Pokemon, PokemonAbility, PokemonMove, PokemonSprite, PokemonStat, PokemonType } from '../models/pokemon.model';
+import { GameIndex, Item, NameAndUrl, Pokemon, PokemonAbility, PokemonMove, PokemonSprite, PokemonSpriteSet, PokemonStat, PokemonType } from '../models/pokemon.model';
 
 export interface PokedexApiInterval {
   offset: number,
   limit: number
+}
+
+export interface PokedexPage {
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  pageNumber: number;
+  pokemon: (Pokemon | unknown)[]
 }
 
 // TODO create a types package on npm :-)
@@ -24,7 +32,7 @@ export interface PokemonResponse {
   location_area_encounters: string,
   moves: PokemonMove[],
   species: NameAndUrl[],
-  sprites: PokemonSprite[],
+  sprites: PokemonSpriteSet,
   stats: PokemonStat[],
   types: PokemonType[],
   weight: number,
@@ -53,15 +61,26 @@ export class PokedexApiService {
     return new Pokemon(pokemonResponse);
   }
 
-  async getPokemonList(interval: PokedexApiInterval = { offset: 20, limit: 10 }): Promise<(Pokemon | null)[]> {
-    const res = await this.P.getPokemonsList(interval);
-    return await Promise.all(res.results.map((p: { name: string }) => {
-      console.log(p);
+  async getPokemonList(interval: PokedexApiInterval = { offset: 0, limit: 50 }): Promise<PokedexPage> {
+    const { results, count } = await this.P.getPokemonsList(interval);
+
+    const pokemon = await Promise.all(results.map((p: { name: string }) => {
       try {
         return this.getPokemonByName(p.name);        
       } catch {
         return null
       }
     }));
+
+    const totalPages = Math.ceil(count / interval.limit);
+    const pageNumber = Math.ceil(interval.offset / interval.limit)
+
+    return {
+      pageNumber,
+      size: interval.limit,
+      totalPages,
+      totalElements: count,
+      pokemon
+    }
   }
 }

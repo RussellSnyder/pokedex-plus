@@ -6,24 +6,27 @@ import { PokemonOverviewComponent } from './features/pokemon-overview/pokemon-ov
 
 export const PokedexTopLevelRoute = {
   Home: '',
-  PokemonOverview: 'pokemon',
-  PokemonDetail: 'pokemon/:id',
+  Pokemon: 'pokemon',
   NotFound: '404',
+}
+
+export const PokemonRoutes = {
+  Detail: 'pokemon/:name'
 }
 
 export const TopLevelRoutes: Routes = [
   {
     path: PokedexTopLevelRoute.Home, //
-    redirectTo: PokedexTopLevelRoute.PokemonOverview,
+    redirectTo: PokedexTopLevelRoute.Pokemon,
     pathMatch: 'full',
   },
   {
-    path: PokedexTopLevelRoute.PokemonOverview,
+    path: PokedexTopLevelRoute.Pokemon,
     component: PokemonOverviewComponent,
     pathMatch: 'full',
   },
   {
-    path: PokedexTopLevelRoute.PokemonDetail,
+    path: PokemonRoutes.Detail,
     component: PokemonDetailComponent,
   },
   {

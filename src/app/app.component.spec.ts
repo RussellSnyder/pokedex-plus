@@ -40,7 +40,7 @@ describe('AppComponent', () => {
     it('should redirect to PokemonOverivew if "" is given', fakeAsync(() => {
       router.navigate([""]);
       tick();
-      expect(location.path()).toBe(`/${PokedexTopLevelRoute.PokemonOverview}`);
+      expect(location.path()).toBe(`/${PokedexTopLevelRoute.Pokemon}`);
     }));
 
     it('should redirect to NotFound if "asdfasdf" is given', fakeAsync(() => {
@@ -52,7 +52,7 @@ describe('AppComponent', () => {
     it('should navigate to pokemon detail component if "pokemon/:id" is given', fakeAsync(() => {
       router.navigate(['pokemon/lala']);
       tick();
-      expect(location.path()).toBe(`/${PokedexTopLevelRoute.PokemonOverview}/lala`);
+      expect(location.path()).toBe(`/${PokedexTopLevelRoute.Pokemon}/lala`);
     }));
 
   })

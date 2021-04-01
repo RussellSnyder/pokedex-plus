@@ -1,1 +1,24 @@
-<p>pokemon-overview works!</p>
+<h2 class="page-heading">Pokemon</h2>
+
+<div class="container" [ngSwitch]="loadingState">
+  <app-loading *ngSwitchCase="LoadingState.Loading"></app-loading>
+  <ngx-datatable
+    *ngSwitchCase="LoadingState.DataAvailable"
+    class="material"
+    [rows]="pokedexPage!.pokemon"
+    [columns]="columns"
+    [columnMode]="ColumnMode.force"
+    [headerHeight]="50"
+    [footerHeight]="50"
+    rowHeight="auto"
+    [externalPaging]="true"
+    [count]="pokedexPage!.totalElements"
+    [offset]="pokedexPage!.pageNumber"
+    [limit]="pokedexPage!.size"
+    (page)="setPage($event)"
+    (select)="onSelect($event)"
+    [selectionType]="SelectionType.single"
+    ></ngx-datatable>
+  <h3 *ngSwitchCase="LoadingState.Error">Something Went Wrong :-/</h3>
+  <h2 *ngSwitchCase="LoadingState.NoDataAvailable">No Data available...</h2>
+</div>
