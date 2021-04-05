@@ -33,8 +33,10 @@ $pokedex-plus-theme: mat-light-theme((
 // that you are using.
 @include angular-material-theme($pokedex-plus-theme);
 
-@import '~@swimlane/ngx-datatable/themes/material.scss';
-@import '~@swimlane/ngx-datatable/assets/icons.css';
+
+@import 'variables';
+@import '~bootstrap/scss/bootstrap-reboot';
+@import '~bootstrap/scss/bootstrap-grid';
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

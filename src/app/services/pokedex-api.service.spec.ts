@@ -16,7 +16,7 @@ describe('PokedexApiService', () => {
       ]
     });
     service = TestBed.inject(PokedexApiService);
-    service.P = wrapperSpy
+    service.httpClient = wrapperSpy
   });
 
   describe('getPokemonByName', () => {

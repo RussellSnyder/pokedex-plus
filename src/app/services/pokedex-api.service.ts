@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
 // @ts-ignore-next-line
 import * as PokeApiWrapper from 'pokeapi-js-wrapper';
-import { GameIndex, Item, NameAndUrl, Pokemon, PokemonAbility, PokemonMove, PokemonSprite, PokemonSpriteSet, PokemonStat, PokemonType } from '../models/pokemon.model';
+import { environment } from '../../environments/environment';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
-export interface PokedexApiInterval {
+import { GameIndex, Item, NameAndUrl, Pokemon, PokemonAbility, PokemonMove, PokemonSprite, PokemonSpriteSet, PokemonStat, PokemonType } from '../models/pokemon.model';
+import { AllPokemonStats, FilterParam, IPokemon, ListInterval, PokemonListResponse } from '../models/shared';
+
+export interface QueryListInterval {
   offset: number,
   limit: number
 }
@@ -13,7 +17,7 @@ export interface PokedexPage {
   totalElements: number;
   totalPages: number;
   pageNumber: number;
-  pokemon: (Pokemon | unknown)[]
+  pokemon: IPokemon[]
 }
 
 // TODO create a types package on npm :-)
@@ -42,45 +46,60 @@ export interface PokemonResponse {
   providedIn: 'root'
 })
 export class PokedexApiService {
-  P: any;
+  httpClient: AxiosInstance;
 
   constructor() {
-    const customOptions = {
-      protocol: "https",
-      hostName: "pokeapi.co",
-      versionPath: "/api/v2/",
-      cache: true,
-      timeout: 5 * 1000, // 5s
-      cacheImages: false
-    }
-    this.P = new PokeApiWrapper.Pokedex(customOptions)
+    this.httpClient = axios.create({
+      baseURL: environment.apiEndpoint,
+    });    
   }
 
   async getPokemonByName(pokemonName: string): Promise<Pokemon> {
-    const pokemonResponse: PokemonResponse = await this.P.getPokemonByName(pokemonName);
+    const pokemonResponse: PokemonResponse = await this.httpClient.get(`pokemon/${pokemonName}`);
     return new Pokemon(pokemonResponse);
   }
 
-  async getPokemonList(interval: PokedexApiInterval = { offset: 0, limit: 50 }): Promise<PokedexPage> {
-    const { results, count } = await this.P.getPokemonsList(interval);
+  async getPokemonList({ offset, limit }: ListInterval = { offset: 0, limit: 50 }, filters?: FilterParam): Promise<PokedexPage> {
+    const options: AxiosRequestConfig = {
+      params: { offset, limit }
+    }
 
-    const pokemon = await Promise.all(results.map((p: { name: string }) => {
-      try {
-        return this.getPokemonByName(p.name);        
-      } catch {
-        return null
-      }
-    }));
+    if (filters) {
+      options.params.filter = this._serializeFilterParams(filters);
+    }
 
-    const totalPages = Math.ceil(count / interval.limit);
-    const pageNumber = Math.ceil(interval.offset / interval.limit)
+    const res = await this.httpClient.get(`pokemon`, options)
+
+    const { totalResults, results, offset: resOffest, limit: resLimit }: PokemonListResponse = res.data;
+
+    const totalPages = Math.ceil(totalResults / resLimit!);
+    const currentPageNumber = Math.ceil(resOffest! / resLimit!)
 
     return {
-      pageNumber,
-      size: interval.limit,
+      pageNumber: currentPageNumber,
       totalPages,
-      totalElements: count,
-      pokemon
+      size: resLimit!,
+      totalElements: totalResults,
+      pokemon: results
     }
+  }
+
+  _serializeFilterParams(filters?: FilterParam): string | null {
+    if (!filters) {
+      return null
+    }
+    let queryArray: string[] = []    
+
+    if (filters.generations) {
+      queryArray.push(`generations:[${filters.generations.join(',')}]`);
+    }
+    return `${queryArray.join(':')}`;
+  }
+
+  async getPokemonStats(): Promise<AllPokemonStats> {
+    const res = await this.httpClient.get(`stats`);
+
+    return res.data;
+
   }
 }
