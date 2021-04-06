@@ -3,7 +3,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatSelectChange } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { LoadingState } from 'src/app/models/loading-state.enum';
-import { AllPokemonStats, FilterParam } from 'src/app/models/shared';
+import { AllPokemonStats, FilterParam } from 'src/app/models/isomorphic';
 import { PokedexApiService, PokedexPage } from 'src/app/services/pokedex-api.service';
 
 @Component({

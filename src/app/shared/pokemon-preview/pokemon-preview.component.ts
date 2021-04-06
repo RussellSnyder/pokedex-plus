@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IPokemon } from 'src/app/models/shared';
+import { IPokemon } from 'src/app/models/isomorphic';
 
 @Component({
   selector: 'app-pokemon-preview',

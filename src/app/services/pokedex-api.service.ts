@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
-import { AllPokemonStats, FilterParam, IPokemon, ListInterval, PokemonListResponse } from '../models/shared';
+import { AllPokemonStats, FilterParam, IPokemon, ListInterval, PokemonListResponse } from '../models/isomorphic';
 
 export interface QueryListInterval {
   offset: number;

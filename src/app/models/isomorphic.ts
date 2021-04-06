@@ -1,3 +1,5 @@
+// This file is shared between the FE and BE
+
 export interface GroupNamedAPIResourceResponse {
   data: {
     count: number;

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingState } from 'src/app/models/loading-state.enum';
-import { IPokemon } from 'src/app/models/shared';
+import { IPokemon } from 'src/app/models/isomorphic';
 import { PokedexApiService } from 'src/app/services/pokedex-api.service';
 
 type StringObject = {
