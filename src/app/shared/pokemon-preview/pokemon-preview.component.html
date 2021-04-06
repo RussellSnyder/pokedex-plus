@@ -1,0 +1,14 @@
+<mat-card class="pokemon-preview mx-auto">
+  <mat-card-header>
+    <mat-card-title>
+      {{ pokemon.name }}
+    </mat-card-title>
+  </mat-card-header>
+  <img mat-card-image src="{{ pokemon.sprites.main.front_default }}" alt="Photo of a {{ pokemon.name }}">
+  <mat-card-subtitle>
+    <mat-chip-list aria-label="Fish selection">
+      <mat-chip color="secondary" *ngFor="let type of pokemon.types" >{{ type }}</mat-chip>
+      <mat-chip>Gen {{ pokemon.generation }}</mat-chip>      
+    </mat-chip-list>
+  </mat-card-subtitle>
+</mat-card>

@@ -1,1 +1,62 @@
-<p>pokemon-overview works!</p>
+<h2 class="page-heading">Pokemon</h2>
+
+<div class="container control-container" [ngSwitch]="statsLoadingState">
+  <app-loading *ngSwitchCase="LoadingState.Loading"></app-loading>
+
+  <div class="row mb-3" *ngSwitchCase="LoadingState.DataAvailable">
+    <div class="col-8">
+      <mat-select></mat-select>
+      <h2>Filters</h2>
+      <!-- {{ stats | json }} -->
+      <mat-form-field appearance="fill">
+        <mat-label>Generation</mat-label>
+        <mat-select multiple (selectionChange)="updateGenFilter($event)">
+          <mat-option *ngFor="let gen of stats!.pokemonInGeneration | keyvalue" [value]="gen.key">
+            {{ gen.key }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      &nbsp;
+      <mat-form-field appearance="fill">
+        <mat-label>Type</mat-label>
+        <mat-select multiple>
+          <mat-option *ngFor="let type of stats!.types | keyvalue" [value]="type.key">
+            {{ type.key }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      &nbsp;
+      <mat-form-field appearance="fill">
+        <mat-label>Ability</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let ability of stats!.abilities | keyvalue" [value]="ability.key">
+            {{ ability.key }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-4">
+      <h2>Sort by</h2>
+    </div>
+  </div>
+</div>
+
+<div class="container result-container" [ngSwitch]="pokemonLoadingState">
+  <app-loading *ngSwitchCase="LoadingState.Loading"></app-loading>
+  <ng-container *ngSwitchCase="LoadingState.DataAvailable">
+    <div class="row justify-content-center">
+      <div class="col-sm-6 col-md-4 col-lg-3 mb-4" *ngFor="let pokemon of pokedexPage!.pokemon">
+        <app-pokemon-preview [pokemon]="pokemon"></app-pokemon-preview>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <mat-paginator [length]="pagination.length" [pageSize]="pagination.pageSize"
+          [pageSizeOptions]="pagination.pageSizeOptions" (page)="pagePokemonList($event)">
+        </mat-paginator>
+      </div>
+    </div>
+  </ng-container>
+  <h3 *ngSwitchCase="LoadingState.Error">Something Went Wrong :-/</h3>
+  <h2 *ngSwitchCase="LoadingState.NoDataAvailable">No Data available...</h2>
+</div>

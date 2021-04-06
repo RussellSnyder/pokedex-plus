@@ -1,1 +1,33 @@
-<p>pokemon-detail works!</p>
+<h2>{{ name }}</h2>
+
+<div class="container" [ngSwitch]="loadingState">
+    <h2 *ngSwitchCase="LoadingState.Loading">Loading...</h2>
+    <div *ngSwitchCase="LoadingState.DataAvailable">
+      <h5>Main Images</h5>
+      <ng-container *ngFor="let image of images.main | keyvalue">
+        <strong>{{ image.key }}</strong>
+        <img src="{{image.value}}" />
+      </ng-container>
+      <h5>Other Images</h5>
+      <ng-container *ngFor="let other of images.other | keyvalue">
+        <strong>{{ other.key }}</strong>
+        <ng-container *ngFor="let image of other.value | keyvalue">
+          <strong>{{ image.key }}</strong>
+          <img src="{{image.value}}" />
+        </ng-container>
+      </ng-container>
+      <h5>Versions</h5>
+      <ng-container *ngFor="let generation of images.versions | keyvalue">
+        <h2>{{ generation.key }}</h2>
+        <ng-container *ngFor="let version of generation.value | keyvalue">
+          <h3>{{ version.key }}</h3>
+          <ng-container *ngFor="let image of version.value | keyvalue">
+            <strong>{{ image.key }}</strong>
+            <img src="{{image.value}}" />
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </div>
+    <h3 *ngSwitchCase="LoadingState.Error">Something Went Wrong :-/</h3>
+    <h2 *ngSwitchCase="LoadingState.NoDataAvailable">No Data available...</h2>
+</div>

@@ -30,15 +30,17 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 - [x] Application Route scaffolding
 - [x] Test Application Route scaffolding
-- [ ] Application Data fetching - 1
-- [ ] Test application data fetching
+- [x] Application Data fetching - 1
+- [x] Test application data fetching
 - [ ] Pokemon Overview table 1 - Basic
+- [ ] Test
+- [ ] Pokemon Detail View 1 - Basic
 - [ ] Test
 - [ ] Application Navigator 1 - handling application shared params - navigate to pokemon detail route from data table
 - [ ] Test
-- [ ] Pokemon Detail View - adding tabs
+- [ ] Pokemon Overview table 2 - back from detail - tracking state in params
 - [ ] Test
-- [ ] Application Navigator 2 - handling route specific params (tab from previous)
+- [ ] Pokemon Detail View - adding tabs - tracking tabs in params
 - [ ] Test
 - [ ] Pokemon Overview - filtering and sorting
 - [ ] Test
