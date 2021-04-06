@@ -3,5 +3,5 @@ export enum LoadingState {
   DataAvailable,
   NoDataAvailable,
   Error,
-  InvalidPokemonName
+  InvalidPokemonName,
 }
