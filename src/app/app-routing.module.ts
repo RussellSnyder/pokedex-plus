@@ -3,16 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { PokemonDetailComponent } from './features/pokemon-detail/pokemon-detail.component';
 import { PokemonOverviewComponent } from './features/pokemon-overview/pokemon-overview.component';
-
-export const PokedexTopLevelRoute = {
-  Home: '',
-  Pokemon: 'pokemon',
-  NotFound: '404',
-}
-
-export const PokemonRoutes = {
-  Detail: 'pokemon/:name'
-}
+import { PokedexTopLevelRoute, PokemonSubRoutes } from './models/routes';
 
 export const TopLevelRoutes: Routes = [
   {
@@ -26,7 +17,7 @@ export const TopLevelRoutes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: PokemonRoutes.Detail,
+    path: `${PokedexTopLevelRoute.Pokemon}/:${PokemonSubRoutes.DetailParam}`,
     component: PokemonDetailComponent,
   },
   {

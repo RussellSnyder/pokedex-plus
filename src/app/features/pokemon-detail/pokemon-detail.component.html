@@ -1,33 +1,61 @@
-<h2>{{ name }}</h2>
+<div class="container py-4" [ngSwitch]="loadingState">
+  <h1>{{ name | titlecase }}</h1>
+  <h2 *ngSwitchCase="LoadingState.Loading">Loading...</h2>
+  <ng-container *ngSwitchCase="LoadingState.DataAvailable">
+    <mat-tab-group class="info-tabs">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="mr-2">home</mat-icon>
+          Overview
+        </ng-template>
+        <div class="tab-container">
+          <app-pokemon-detail-home [pokemon]="pokemon"></app-pokemon-detail-home>
+        </div>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="mr-2">photo_camera</mat-icon>
+          Images
+        </ng-template>
+        <div class="tab-container">
+          <app-pokemon-sprite-gallery [spriteSet]="pokemon?.sprites"></app-pokemon-sprite-gallery>
+        </div>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="mr-2">timeline</mat-icon>
+          Statistics
+        </ng-template>
+        <div class="tab-container">
+          Statstics coming soon!
+        </div>
+      </mat-tab>
 
-<div class="container" [ngSwitch]="loadingState">
-    <h2 *ngSwitchCase="LoadingState.Loading">Loading...</h2>
-    <div *ngSwitchCase="LoadingState.DataAvailable">
-      <h5>Main Images</h5>
-      <ng-container *ngFor="let image of images.main | keyvalue">
-        <strong>{{ image.key }}</strong>
-        <img src="{{image.value}}" />
-      </ng-container>
-      <h5>Other Images</h5>
-      <ng-container *ngFor="let other of images.other | keyvalue">
-        <strong>{{ other.key }}</strong>
-        <ng-container *ngFor="let image of other.value | keyvalue">
-          <strong>{{ image.key }}</strong>
-          <img src="{{image.value}}" />
-        </ng-container>
-      </ng-container>
-      <h5>Versions</h5>
-      <ng-container *ngFor="let generation of images.versions | keyvalue">
-        <h2>{{ generation.key }}</h2>
-        <ng-container *ngFor="let version of generation.value | keyvalue">
-          <h3>{{ version.key }}</h3>
-          <ng-container *ngFor="let image of version.value | keyvalue">
-            <strong>{{ image.key }}</strong>
-            <img src="{{image.value}}" />
-          </ng-container>
-        </ng-container>
-      </ng-container>
+      <mat-tab label="Similar Pokemon">
+        <ng-template mat-tab-label>
+          <mat-icon class="mr-2">compare_arrows</mat-icon>
+          Similar Pokemon
+        </ng-template>
+        <div class="tab-container">
+          Coming soon!
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    <div class="row my-4">
+      <div class="col-6">
+        <button mat-raised-button>
+          <mat-icon aria-hidden="false" aria-label="Example home icon">arrow_back_ios</mat-icon>
+          Previous Pokemon
+        </button>
+      </div>
+      <div class="col-6 text-right">
+        <button mat-raised-button>
+          Next Pokemon
+          <mat-icon aria-hidden="false" aria-label="Example home icon">arrow_forward_ios</mat-icon>
+        </button>
+      </div>
     </div>
-    <h3 *ngSwitchCase="LoadingState.Error">Something Went Wrong :-/</h3>
-    <h2 *ngSwitchCase="LoadingState.NoDataAvailable">No Data available...</h2>
+  </ng-container>
+  <h3 *ngSwitchCase="LoadingState.Error">Something Went Wrong :-/</h3>
+  <h2 *ngSwitchCase="LoadingState.NoDataAvailable">No Data available...</h2>
 </div>

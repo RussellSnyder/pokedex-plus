@@ -1,0 +1,6 @@
+<ng-container *ngIf="stats">
+  <highcharts-chart [Highcharts]="Highcharts" [constructorType]="chartConstructor" [options]="chartOptions" [callbackFunction]="chartCallback"
+  [(update)]="updateFlag" [oneToOne]="oneToOneFlag" style="width: 100%; height: auto; display: block;">
+ </highcharts-chart>
+
+</ng-container>

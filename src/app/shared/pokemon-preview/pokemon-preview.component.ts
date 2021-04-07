@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IPokemon } from 'src/app/models/isomorphic';
+import { PokemonNavigatorService } from 'src/app/services/pokemon-navigator';
 
 @Component({
   selector: 'app-pokemon-preview',
@@ -9,7 +10,7 @@ import { IPokemon } from 'src/app/models/isomorphic';
 export class PokemonPreviewComponent implements OnInit {
   @Input() pokemon!: IPokemon;
 
-  constructor() { }
+  constructor(public navigator: PokemonNavigatorService) { }
 
   ngOnInit(): void {
   }

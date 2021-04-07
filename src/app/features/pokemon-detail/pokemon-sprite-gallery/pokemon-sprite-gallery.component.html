@@ -1,0 +1,43 @@
+<ng-container *ngIf="spriteSet?.main">
+  <h2>Main Images</h2>
+  <div class="row">
+    <ng-container *ngFor="let image of spriteSet!.main | keyvalue">
+      <div class="col-md-6 col-lg-4 mb-3">
+        <app-pokemon-sprite-gallery-image-card [image]="image"></app-pokemon-sprite-gallery-image-card>
+      </div>
+    </ng-container>
+  </div>
+  <hr class="mb-4">
+</ng-container>
+
+<ng-container *ngIf="spriteSet?.other">
+  <h2>Other Images</h2>
+  <ng-container *ngFor="let other of spriteSet!.other | keyvalue">
+    <h3>{{ other.key }}</h3>
+    <div class="row mb-2">
+      <ng-container *ngFor="let image of other.value | keyvalue">
+        <div class="col-md-6 col-lg-4 mb-3">
+          <app-pokemon-sprite-gallery-image-card [image]="image"></app-pokemon-sprite-gallery-image-card>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+  <hr class="mb-4">
+</ng-container>
+
+<ng-container *ngIf="spriteSet?.versions">
+  <h2>Versions</h2>
+  <ng-container *ngFor="let generation of spriteSet!.versions | keyvalue">
+    <h2>{{ generation.key }}</h2>
+    <ng-container *ngFor="let version of generation.value | keyvalue">
+      <h3>{{ version.key }}</h3>
+      <div class="row mb-3">
+        <ng-container *ngFor="let image of version.value | keyvalue">
+          <div class="col-md-6 col-lg-4 mb-3">
+            <app-pokemon-sprite-gallery-image-card [image]="image"></app-pokemon-sprite-gallery-image-card>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-container>

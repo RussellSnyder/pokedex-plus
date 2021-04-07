@@ -21,8 +21,16 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import {MatSliderModule} from '@angular/material/slider';
 import { MatSelectModule } from '@angular/material/select';
+import {MatTabsModule} from '@angular/material/tabs';
 import { LoadingComponent } from './shared/loading/loading.component';
 import { PokemonPreviewComponent } from './shared/pokemon-preview/pokemon-preview.component';
+import { PokemonNavigatorService } from './services/pokemon-navigator';
+import { PokemonSpriteGalleryComponent } from './features/pokemon-detail/pokemon-sprite-gallery/pokemon-sprite-gallery.component';
+import { PokemonSpriteGalleryImageCardComponent } from './features/pokemon-detail/pokemon-sprite-gallery/pokemon-sprite-gallery-image-card/pokemon-sprite-gallery-image-card.component';
+import { PokemonDetailHomeComponent } from './features/pokemon-detail/pokemon-detail-home/pokemon-detail-home.component';
+import { PokemonStatsComponent } from './shared/pokemon-stats/pokemon-stats.component';
+import { PokemonNomralizedStatsComponent } from './shared/pokemon-normalized-stats/pokemon-normalized-stats.component';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 @NgModule({
   declarations: [
@@ -33,6 +41,11 @@ import { PokemonPreviewComponent } from './shared/pokemon-preview/pokemon-previe
     PokedexNavigationComponent,
     LoadingComponent,
     PokemonPreviewComponent,
+    PokemonSpriteGalleryComponent,
+    PokemonSpriteGalleryImageCardComponent,
+    PokemonDetailHomeComponent,
+    PokemonStatsComponent,
+    PokemonNomralizedStatsComponent,
   ],
   imports: [
     MatToolbarModule,
@@ -50,8 +63,10 @@ import { PokemonPreviewComponent } from './shared/pokemon-preview/pokemon-previe
     MatProgressSpinnerModule,
     MatSelectModule,
     MatSliderModule,
+    MatTabsModule,
+    HighchartsChartModule,
   ],
-  providers: [PokedexApiService],
+  providers: [PokedexApiService, PokemonNavigatorService],
   bootstrap: [AppComponent],
   exports: [PokemonOverviewComponent]
 })

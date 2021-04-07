@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingState } from 'src/app/models/loading-state.enum';
-import { IPokemon } from 'src/app/models/isomorphic';
+import { IPokemon, PokemonSpriteSet } from 'src/app/models/isomorphic';
 import { PokedexApiService } from 'src/app/services/pokedex-api.service';
 
 type StringObject = {
@@ -24,15 +24,6 @@ type VersionsObject = {
 export class PokemonDetailComponent implements OnInit {
   @Input() name?: string;
   pokemon?: IPokemon;
-  images: {
-    main: StringObject
-    other: StringObject
-    versions: VersionsObject
-  } = {
-    main: {},
-    other: {},
-    versions: {},
-  };
 
   loadingState: LoadingState = LoadingState.Loading;
   LoadingState = LoadingState;
@@ -55,14 +46,6 @@ export class PokemonDetailComponent implements OnInit {
       if (!this.pokemon) {
         return;
       }
-
-      const { main, other, versions } = this.pokemon.sprites;
-
-      this.images = {
-        main: main as StringObject,
-        other: other as StringObject,
-        versions: versions as unknown as VersionsObject,
-      };
 
       this.loadingState = LoadingState.DataAvailable;
 
