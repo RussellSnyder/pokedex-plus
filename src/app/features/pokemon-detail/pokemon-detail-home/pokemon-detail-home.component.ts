@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { IPokemon } from 'src/app/models/isomorphic';
+import { IPokemon } from 'src/isomorphic/types';
 
 @Component({
   selector: 'app-pokemon-detail-home',

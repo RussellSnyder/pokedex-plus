@@ -1,5 +1,6 @@
+
 import { Component, Input, OnInit } from '@angular/core';
-import { IPokemon } from 'src/app/models/isomorphic';
+import { IPokemon } from 'src/isomorphic/types';
 import { PokemonNavigatorService } from 'src/app/services/pokemon-navigator';
 
 @Component({

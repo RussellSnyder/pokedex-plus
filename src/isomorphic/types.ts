@@ -1,4 +1,5 @@
 // This file is shared between the FE and BE
+export type ValueOf<T> = T[keyof T];
 
 export interface GroupNamedAPIResourceResponse {
   data: {
@@ -164,8 +165,8 @@ export interface IPokemon {
   stats: PokemonStats;
   normalizedStats: PokemonStats;
 
-  physicalCharacteristics: PokemonPhysicalCharactersitics;
-  normalizedPhysicalCharacteristics: PokemonPhysicalCharactersitics;
+  physicalCharacteristics: PokemonPhysicalCharacteristics;
+  normalizedPhysicalCharacteristics: PokemonPhysicalCharacteristics;
 
   sprites: PokemonSpriteSet;
 }
@@ -179,7 +180,7 @@ export interface PokemonStats {
   speed?: number;
 }
 
-export interface PokemonPhysicalCharactersitics {
+export interface PokemonPhysicalCharacteristics {
   height: number;
   weight: number;
 }
@@ -190,20 +191,20 @@ export interface PokemonActions {
 }
 
 export interface FilterParam {
-  type?: string;
-  generations?: number[];
-  height?: [number, number];
-  weight?: [number, number];
-  hp?: [number, number];
-  attack?: [number, number];
-  defense?: [number, number];
-  specialAttack?: [number, number];
-  specialDefense?: [number, number];
-  speed?: [number, number];
-  ability?: string;
-  move?: string;
+  typeList?: string[];
+  generationList?: number[];
+  heightRange?: [number, number];
+  weightRange?: [number, number];
+  hpRange?: [number, number];
+  attackRange?: [number, number];
+  defenseRange?: [number, number];
+  specialAttackRange?: [number, number];
+  specialDefenseRange?: [number, number];
+  speedRange?: [number, number];
+  abilityList?: string[];
+  moveList?: string[];
   isDefault?: boolean;
-  presentInGame?: string;
+  presentInGameList?: string[];
 }
 
 export enum SortParam {
@@ -218,15 +219,14 @@ export enum SortParam {
 export interface PokemonListOptions {
   filter?: FilterParam;
   sort?: SortParam;
-  limit?: number;
-  offset?: number;
+  interval?: ListInterval;
 }
 
 export interface NameAndCount {
   [key: string]: number;
 }
 
-export interface MathmaticalStats {
+export interface MathematicalStats {
   mean: number;
   median: number;
   mode: number;
@@ -237,7 +237,7 @@ export interface MathmaticalStats {
   min: number;
 }
 
-export interface AllPokemonStat extends MathmaticalStats {
+export interface AllPokemonStat extends MathematicalStats {
   nameAndCounts: NameAndCount;
 }
 
@@ -245,6 +245,7 @@ export interface AllPokemonStats {
   types: NameAndCount;
   abilities: NameAndCount;
   moves: NameAndCount;
+  generations: number[];
   pokemonInGeneration: NameAndCount;
   pokemonPresentInGame: NameAndCount;
 
@@ -266,4 +267,33 @@ export interface PokemonListResponse {
   totalResults: number;
   offset?: number;
   limit?: number;
+}
+
+export enum PokemonQueryPrefix {
+  Interval = 'i',
+  Filter = 'f',
+  Sort = 's',
+}
+
+export const PokemonListQueryPrefixLookup = {
+  i: 'interval',
+  f: 'filter',
+  s: 'sort',
+};
+
+export enum PokemonQuerySuffix {
+  Range = 'r',
+  List = 'l',
+  Boolean = 'b',
+}
+
+export const PokemonListQuerySuffixLookup = {
+  r: 'Range',
+  l: 'List',
+};
+
+export interface DecodedPokemonListUrl {
+  interval?: ListInterval;
+  filter?: FilterParam;
+  sort?: SortParam;
 }

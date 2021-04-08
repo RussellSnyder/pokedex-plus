@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { PokemonSprite, PokemonSpriteSet } from 'src/app/models/isomorphic';
+import { PokemonSprite, PokemonSpriteSet } from 'src/isomorphic/types';
 
 /* tslint:disable */
 @Component({

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSelectChange } from '@angular/material/select';
-import { Router } from '@angular/router';
+import { AllPokemonStats, FilterParam, ListInterval, SortParam } from 'src/isomorphic/types';
 import { LoadingState } from 'src/app/models/loading-state.enum';
-import { AllPokemonStats, FilterParam } from 'src/app/models/isomorphic';
 import { PokedexApiService, PokedexPage } from 'src/app/services/pokedex-api.service';
+import { PokemonNavigatorService } from 'src/app/services/pokemon-navigator';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-pokemon-overview',
@@ -28,13 +29,32 @@ export class PokemonOverviewComponent implements OnInit {
     pageIndex: 0,
   };
 
-  filters: FilterParam = {};
+  filter?: FilterParam = {
+    generationList: []
+  };
 
-  constructor(private api: PokedexApiService, private router: Router) { }
+  interval?: ListInterval;
+  sort?: SortParam;
+
+  constructor(private api: PokedexApiService, private nav: PokemonNavigatorService) { }
 
   ngOnInit(): void {
-    this.loadPokemon();
-    this.loadStats();
+    this.nav.getPokemonListQueriesFromUrl().subscribe(decodedQueryParams => {
+      console.log({ decodedQueryParams });
+
+      const { interval, filter, sort } = decodedQueryParams;
+
+      this.filter = {
+        ...this.filter,
+        ...filter,
+      };
+
+      this.interval = interval;
+      this.sort = sort;
+
+      this.loadPokemon();
+      this.loadStats();
+    });
   }
 
   private async loadStats(): Promise<void> {
@@ -51,9 +71,13 @@ export class PokemonOverviewComponent implements OnInit {
 
     try {
       this.pokedexPage = await this.api.getPokemonList({
-        offset: this.pagination.pageSize * this.pagination.pageIndex,
-        limit: this.pagination.pageSize,
-      }, this.filters);
+        interval: {
+          offset: this.pagination.pageSize * this.pagination.pageIndex,
+          limit: this.pagination.pageSize,
+        },
+        filter: this.filter,
+        sort: this.sort
+      });
 
       this.pagination = {
         ...this.pagination,
@@ -73,12 +97,28 @@ export class PokemonOverviewComponent implements OnInit {
     }
   }
 
-  updateGenFilter(event: MatSelectChange): void {
-    const { value } = event;
+  updateFilter(event: MatSelectChange): void {
+    const { value, source } = event;
+    const { id } = source;
 
-    this.filters.generations = value;
+    const decodedFilterName = id as keyof FilterParam;
+    // console.log({ filterName: encodedFilterName });
 
+    this.filter = {
+      ...this.filter,
+      [decodedFilterName]: value
+    };
+
+    this.updateUrl();
     this.loadPokemon();
+  }
+
+  updateUrl(): void {
+    this.nav.encodePokemonListQueriesToUrl({
+      filter: this.filter,
+      sort: this.sort,
+      interval: this.interval,
+    });
   }
 
   pagePokemonList(event: PageEvent): void {
@@ -92,6 +132,19 @@ export class PokemonOverviewComponent implements OnInit {
 
     this.loadPokemon();
 
+  }
+
+  compareGenerationFilter(generation: string, values: any): boolean {
+    console.log(generation, values, this.filter);
+    const selected = this.filter?.generationList;
+    // console.log('filter:', this.filter);
+    // console.log({ generation, values });
+    if (!selected) {
+      return false;
+    }
+
+    return selected.includes(parseInt(generation, 10));
+    // return object1 && object2 && object1.id === object2.id;
   }
 }
 

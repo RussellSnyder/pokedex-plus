@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import * as HighchartsMore from 'highcharts/highcharts-more';
 import * as HighchartsExporting from 'highcharts/modules/exporting';
-import { PokemonStats } from 'src/app/models/isomorphic';
+import { PokemonStats } from 'src/isomorphic/types';
 
 // @ts-ignore
 HighchartsMore(Highcharts);

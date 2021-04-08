@@ -7,19 +7,18 @@
     <div class="col-8">
       <mat-select></mat-select>
       <h2>Filters</h2>
-      <!-- {{ stats | json }} -->
       <mat-form-field appearance="fill">
         <mat-label>Generation</mat-label>
-        <mat-select multiple (selectionChange)="updateGenFilter($event)">
-          <mat-option *ngFor="let gen of stats!.pokemonInGeneration | keyvalue" [value]="gen.key">
-            {{ gen.key }}
+        <mat-select id="generationList" [(value)]="filter.generationList"  multiple (selectionChange)="updateFilter($event)">
+          <mat-option *ngFor="let gen of stats!.generations" [value]="gen">
+            {{ gen }}
           </mat-option>
         </mat-select>
       </mat-form-field>
       &nbsp;
       <mat-form-field appearance="fill">
         <mat-label>Type</mat-label>
-        <mat-select multiple>
+        <mat-select id="typeList"  [(value)]="filter.typeList" multiple (selectionChange)="updateFilter($event)">
           <mat-option *ngFor="let type of stats!.types | keyvalue" [value]="type.key">
             {{ type.key }}
           </mat-option>

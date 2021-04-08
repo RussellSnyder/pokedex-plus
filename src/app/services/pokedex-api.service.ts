@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
-import { AllPokemonStats, FilterParam, IPokemon, ListInterval, PokemonListResponse } from '../models/isomorphic';
+import { AllPokemonStats, DecodedPokemonListUrl, FilterParam, IPokemon, ListInterval, PokemonListResponse } from '../../isomorphic/types';
+import { encodePokemonListFilterQueryParam } from 'src/isomorphic/url-functions';
 
 export interface QueryListInterval {
   offset: number;
@@ -34,13 +35,29 @@ export class PokedexApiService {
     return res.data;
   }
 
-  async getPokemonList({ offset, limit }: ListInterval = { offset: 0, limit: 50 }, filters?: FilterParam): Promise<PokedexPage> {
+  async getPokemonList(queries: DecodedPokemonListUrl): Promise<PokedexPage> {
+    const { interval, filter, sort } = queries;
+
     const options: AxiosRequestConfig = {
-      params: { offset, limit }
+      params: {}
     };
 
-    if (filters) {
-      options.params.filter = this._serializeFilterParams(filters);
+    if (interval) {
+      Object.entries(interval).forEach(([key, value]) => {
+        options.params[`i-${key}`] = value.toString();
+      });
+    }
+
+    if (filter) {
+      Object.entries(filter).forEach(([key, value]) => {
+
+        const filterParamKey = key as keyof FilterParam;
+        const encoded = encodePokemonListFilterQueryParam(filterParamKey, value);
+
+        if (encoded && encoded[1]) {
+          options.params[encoded[0]] = encoded[1];
+        }
+      });
     }
 
     const res = await this.httpClient.get(`pokemon`, options);
@@ -63,15 +80,17 @@ export class PokedexApiService {
     };
   }
 
-  _serializeFilterParams(filters?: FilterParam): string | null {
+  _serializeFilter(filters?: FilterParam): string | null {
     if (!filters) {
       return null;
     }
 
+    console.log({filters});
+
     const queryArray: string[] = [];
 
-    if (filters.generations) {
-      queryArray.push(`generations:[${filters.generations.join(',')}]`);
+    if (filters.generationList) {
+      queryArray.push(`generations:[${filters.generationList.join(',')}]`);
     }
     return `${queryArray.join(':')}`;
   }
@@ -80,6 +99,5 @@ export class PokedexApiService {
     const res = await this.httpClient.get(`stats`);
 
     return res.data;
-
   }
 }
