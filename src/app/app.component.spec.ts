@@ -2,11 +2,12 @@ import { Location } from '@angular/common';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PokedexTopLevelRoute, TopLevelRoutes } from './app-routing.module';
+import { TopLevelRoutes } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { PokemonDetailComponent } from './features/pokemon-detail/pokemon-detail.component';
 import { PokemonOverviewComponent } from './features/pokemon-overview/pokemon-overview.component';
+import { PokedexTopLevelRoute } from './models/routes';
 
 describe('AppComponent', () => {
 
@@ -24,7 +25,7 @@ describe('AppComponent', () => {
       ],
     });
 
-    router = TestBed.inject(Router); 
+    router = TestBed.inject(Router);
     location = TestBed.inject(Location);
 
     fixture = TestBed.createComponent(AppComponent);
@@ -44,7 +45,7 @@ describe('AppComponent', () => {
     }));
 
     it('should redirect to NotFound if "asdfasdf" is given', fakeAsync(() => {
-      router.navigate(["asdfasdf"]);
+      router.navigate(['asdfasdf']);
       tick();
       expect(location.path()).toBe(`/${PokedexTopLevelRoute.NotFound}`);
     }));
@@ -54,6 +55,5 @@ describe('AppComponent', () => {
       tick();
       expect(location.path()).toBe(`/${PokedexTopLevelRoute.Pokemon}/lala`);
     }));
-
-  })
+  });
 });

@@ -4,6 +4,8 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 import { AllPokemonStats, DecodedPokemonListUrl, FilterParam, IPokemon, ListInterval, PokemonListResponse } from '../../isomorphic/types';
 import { encodePokemonListFilterQueryParam } from 'src/isomorphic/url-functions';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Observable, ErrorObserver } from 'rxjs';
 
 export interface QueryListInterval {
   offset: number;
@@ -16,6 +18,10 @@ export interface PokedexPage {
   totalPages: number;
   pageNumber: number;
   pokemon: IPokemon[];
+}
+
+export enum PokedexApiError {
+  NoPokemonWithName
 }
 
 @Injectable({
@@ -36,29 +42,10 @@ export class PokedexApiService {
   }
 
   async getPokemonList(queries: DecodedPokemonListUrl): Promise<PokedexPage> {
-    const { interval, filter, sort } = queries;
-
+    // const params = _createParams(queries)
     const options: AxiosRequestConfig = {
-      params: {}
+      params: this._createParams(queries)
     };
-
-    if (interval) {
-      Object.entries(interval).forEach(([key, value]) => {
-        options.params[`i-${key}`] = value.toString();
-      });
-    }
-
-    if (filter) {
-      Object.entries(filter).forEach(([key, value]) => {
-
-        const filterParamKey = key as keyof FilterParam;
-        const encoded = encodePokemonListFilterQueryParam(filterParamKey, value);
-
-        if (encoded && encoded[1]) {
-          options.params[encoded[0]] = encoded[1];
-        }
-      });
-    }
 
     const res = await this.httpClient.get(`pokemon`, options);
 
@@ -80,6 +67,36 @@ export class PokedexApiService {
     };
   }
 
+  async getPokemonStats(): Promise<AllPokemonStats> {
+    const res = await this.httpClient.get(`stats`);
+
+    return res.data;
+  }
+
+  _createParams({ interval, filter, sort }: DecodedPokemonListUrl): { [key: string]: any } {
+    const params: { [key: string]: any } = {};
+
+    if (interval) {
+      Object.entries(interval).forEach(([key, value]) => {
+        params[`i-${key}`] = value.toString();
+      });
+    }
+
+    if (filter) {
+      Object.entries(filter).forEach(([key, value]) => {
+
+        const filterParamKey = key as keyof FilterParam;
+        const encoded = encodePokemonListFilterQueryParam(filterParamKey, value);
+
+        if (encoded && encoded[1]) {
+          params[encoded[0]] = encoded[1];
+        }
+      });
+    }
+
+    return params;
+  }
+
   _serializeFilter(filters?: FilterParam): string | null {
     if (!filters) {
       return null;
@@ -95,9 +112,4 @@ export class PokedexApiService {
     return `${queryArray.join(':')}`;
   }
 
-  async getPokemonStats(): Promise<AllPokemonStats> {
-    const res = await this.httpClient.get(`stats`);
-
-    return res.data;
-  }
 }

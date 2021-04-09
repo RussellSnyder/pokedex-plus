@@ -3,30 +3,30 @@ import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { PokemonDetailComponent } from './features/pokemon-detail/pokemon-detail.component';
 import { PokemonOverviewComponent } from './features/pokemon-overview/pokemon-overview.component';
-import { PokedexTopLevelRoute, PokemonSubRoutes } from './models/routes';
+import { PokedexTopLevelRoute as PokedexTopLevelRoutePath, PokemonSubRoutes } from './models/routes';
 
 export const TopLevelRoutes: Routes = [
   {
-    path: PokedexTopLevelRoute.Home, //
-    redirectTo: PokedexTopLevelRoute.Pokemon,
+    path: PokedexTopLevelRoutePath.Home, //
+    redirectTo: PokedexTopLevelRoutePath.Pokemon,
     pathMatch: 'full',
   },
   {
-    path: PokedexTopLevelRoute.Pokemon,
+    path: PokedexTopLevelRoutePath.Pokemon,
     component: PokemonOverviewComponent,
     pathMatch: 'full',
   },
   {
-    path: `${PokedexTopLevelRoute.Pokemon}/:${PokemonSubRoutes.DetailParam}`,
+    path: `${PokedexTopLevelRoutePath.Pokemon}/:${PokemonSubRoutes.DetailParam}`,
     component: PokemonDetailComponent,
   },
   {
-    path: PokedexTopLevelRoute.NotFound,
+    path: PokedexTopLevelRoutePath.NotFound,
     component: NotFoundComponent,
   },
   {
     path: '**', // Catch all
-    redirectTo: PokedexTopLevelRoute.NotFound,
+    redirectTo: PokedexTopLevelRoutePath.NotFound,
   },
 ];
 
