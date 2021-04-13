@@ -6,43 +6,84 @@ import {
   ValueOf,
   PokemonListQuerySuffixLookup,
   PokemonQuerySuffix,
-  ListInterval
+  ListInterval,
+  SortParam,
+  FilterQueryParamLookup,
+  IntervalQueryKeyLookup,
+  SortQueryKeyLookup
 } from './types';
 
 export function decodePokemonListQueryParams(queryParams: { [key: string]: string }): DecodedPokemonListUrl {
-  const returnObject: any = {};
+  const decodedQueryParams: DecodedPokemonListUrl = {};
 
-  const prefixesPossible = Object.keys(PokemonListQueryPrefixLookup);
-  const suffixesPossible = Object.keys(PokemonListQuerySuffixLookup);
+  // // Object.entries(queryParams).forEach(([encodedKey, encodedValue]) => {
+  // //   if (isSortQuery(encodedKey)) {
+  // //     // only one sort param
+  // //     decodedQueryParams.sort = decodeSortQueryParam(encodedKey);
+  // //     return;
+  // //   }
 
-  Object.entries(queryParams).forEach(([key, value]) => {
-    const [prefix, ...rest] = key.split('-');
+  // //   if (isIntervalQuery(encodedKey)) {
+  // //     const decodedIntervalKey = decodeIntervalQueryParamKey(encodedKey);
 
-    if (prefixesPossible.includes(prefix)) {
-      const typedPrefix = prefix as keyof typeof PokemonListQueryPrefixLookup;
-      const realKey = PokemonListQueryPrefixLookup[typedPrefix] as keyof DecodedPokemonListUrl;
+  // //     if (!decodedIntervalKey) {
+  // //       console.warn(`could not decode ${encodedKey}`);
+  // //     }
 
-      let queryKey = rest;
+  // //     // if (decodedQueryParams.interval) {
+  // //     //   decodedQueryParams.interval[decodedIntervalKey as keyof typeof IntervalQueryKeyLookup] = _parseValue()
+  // //     // }
 
-      const maybeSuffix = rest[rest.length - 1];
-      if (suffixesPossible.includes(maybeSuffix)) {
-        const typedSuffix = maybeSuffix as keyof typeof PokemonListQuerySuffixLookup;
-        const realSuffix = PokemonListQuerySuffixLookup[typedSuffix];
+  // //     // if (!decodedQueryParams.interval) {
+  // //     //   returnObject[realKey] = {
+  // //     //     [queryKey.join('')]: _parseValue(key, value)
+  // //     //   };
+  // //     // } else {
+  // //     //   returnObject[realKey][queryKey.join('')] = _parseValue(key, value);
+  // //     // }
 
-        queryKey = [...rest.slice(0, rest.length - 1), realSuffix];
-      }
+  // //   }
 
-      if (!returnObject[realKey]) {
-        returnObject[realKey] = {
-          [queryKey.join('')]: _parseValue(key, value)
-        };
-      } else {
-        returnObject[realKey][queryKey.join('')] = _parseValue(key, value);
-      }
-    }
-  });
 
-  return returnObject as DecodedPokemonListUrl;
+  // //   const [prefix, ...rest] = key.split('-');
+
+  // //   if (isSortQuery(key)) {
+  // //     // if (realKey === 'sort') {
+  // //     //   returnObject.sort = rest;
+  // //     //   return;
+  // //     // }
+
+  // //   }
+
+  // //   if (prefixesPossible.includes(prefix)) {
+  // //     const typedPrefix = prefix as keyof typeof PokemonListQueryPrefixLookup;
+  // //     const realKey = PokemonListQueryPrefixLookup[typedPrefix] as keyof DecodedPokemonListUrl;
+
+  // //     let queryKey = rest;
+
+  // //     const maybeSuffix = rest[rest.length - 1];
+  // //     if (suffixesPossible.includes(maybeSuffix)) {
+  // //       const typedSuffix = maybeSuffix as keyof typeof PokemonListQuerySuffixLookup;
+  // //       const decodedSuffix = PokemonListQuerySuffixLookup[typedSuffix];
+
+  // //       console.log({ decodedSuffix });
+
+  // //       queryKey = [...rest.slice(0, rest.length - 1), decodedSuffix];
+  // //     }
+
+  // //     if (!returnObject[realKey]) {
+  // //       returnObject[realKey] = {
+  // //         [queryKey.join('')]: _parseValue(key, value)
+  // //       };
+  // //     } else {
+  // //       returnObject[realKey][queryKey.join('')] = _parseValue(key, value);
+  // //     }
+  // //   } else {
+  // //     console.warn(`unknown query ${key}: ${value}`);
+  // //   }
+  // });
+
+  return decodedQueryParams as DecodedPokemonListUrl;
 }
 
 export function _parseValue(key: string, value: string): (number | string)[] | string | number | boolean {
@@ -117,6 +158,12 @@ export function isDecodedRangeQuery(key: keyof FilterParam): boolean {
   return key.substr(key.length - PokemonListQuerySuffixLookup.r.length, key.length) === `${PokemonListQuerySuffixLookup.r}`;
 }
 
+export function decodePokemonSortQueryParam(encodedValue: string): (keyof typeof SortParam | undefined) {
+  const maybeFound = Object.entries(SortParam).filter(([key, value]) => encodedValue === value);
+  return maybeFound ? getKeyOfObject(maybeFound) as keyof typeof SortParam : undefined;
+}
+
+
 export function encodePokemonListFilterQueryParam(key: keyof FilterParam, value: ValueOf<FilterParam>): [string, string] | undefined {
   if (!value) {
     return;
@@ -154,4 +201,68 @@ const parseStringBool = (value: string): boolean => {
 
   return bool;
 };
+
+export const getKeyWithoutPrefixAndDashes = (key: string) => {
+  const [prefix, ...rest] = key.split('-');
+  return rest.join('');
+};
+export const getKeyOfObject = (o: object) => Object.keys(o)[0];
+export const getValueOfObject = (o: object) => Object.values(o)[0];
+export const getKeyAndValueOfObject = (o: object): [any, any] => [getKeyOfObject(o), getValueOfObject(o)];
+
+export function encodeSortQueryParam(decoded: keyof typeof SortQueryKeyLookup): string {
+  return SortQueryKeyLookup[decoded];
+}
+
+export function decodeSortQueryParam(encodedQueryParam: string): (keyof typeof SortQueryKeyLookup | undefined) {
+  let decodedQueryParam;
+  Object.entries(SortQueryKeyLookup)
+    .forEach(([decoded, encoded]) => {
+      if (encodedQueryParam === encoded) {
+        decodedQueryParam = decoded as keyof typeof SortQueryKeyLookup;
+      }
+    });
+
+  return decodedQueryParam;
+}
+
+function decodeIntervalQueryParamKey(encodedKey: string): (keyof typeof IntervalQueryKeyLookup | undefined) {
+  let decodedQueryParam;
+  Object.entries(IntervalQueryKeyLookup)
+    .forEach(([decoded, encoded]) => {
+      if (encodedKey === encoded) {
+        decodedQueryParam = decoded as keyof typeof IntervalQueryKeyLookup;
+      }
+    });
+
+  return decodedQueryParam;
+}
+
+function decodeIntervalQueryParamValue(encodedValue: string): number {
+  return parseInt(encodedValue, 10);
+}
+
+function encodeIntervalQueryParamKey(decoded: keyof typeof IntervalQueryKeyLookup): string {
+  return IntervalQueryKeyLookup[decoded];
+}
+
+function encodeIntervalQueryParamValue(encodedValue: number): string {
+  return encodedValue.toString();
+}
+
+export function decodeFilterQueryParam(encodedQueryParam: string): (keyof typeof FilterQueryParamLookup | undefined) {
+  let decodedQueryParam;
+  Object.entries(FilterQueryParamLookup)
+    .forEach(([decoded, encoded]) => {
+      if (encodedQueryParam === encoded) {
+        decodedQueryParam = decoded as keyof typeof FilterQueryParamLookup;
+      }
+    });
+
+  return decodedQueryParam;
+}
+
+export function encodeFilterQueryParam(decoded: keyof typeof FilterQueryParamLookup): string {
+  return FilterQueryParamLookup[decoded];
+}
 

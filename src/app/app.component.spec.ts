@@ -9,7 +9,7 @@ import { PokemonDetailComponent } from './features/pokemon-detail/pokemon-detail
 import { PokemonOverviewComponent } from './features/pokemon-overview/pokemon-overview.component';
 import { PokedexTopLevelRoute } from './models/routes';
 
-describe('AppComponent', () => {
+xdescribe('AppComponent', () => {
 
   let location: Location;
   let router: Router;

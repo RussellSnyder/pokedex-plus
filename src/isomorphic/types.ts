@@ -190,6 +190,11 @@ export interface PokemonActions {
   abilities: string[];
 }
 
+export interface IntervalParam {
+  offset: number;
+  limit: number;
+}
+
 export interface FilterParam {
   typeList?: string[];
   generationList?: number[];
@@ -207,18 +212,18 @@ export interface FilterParam {
   presentInGameList?: string[];
 }
 
-export enum SortParam {
-  NameAsc = 'name-asc',
-  NameDesc = 'name-desc',
-  HeightAsc = 'height-asc',
-  HeightDesc = 'height-desc',
-  WeightAsc = 'weight-asc',
-  WeightDesc = 'weight-desc',
-}
+export const SortParam = {
+  nameAsc: 'name-asc',
+  nameDesc: 'name-desc',
+  heightAsc: 'height-asc',
+  heightDesc: 'height-desc',
+  weightAsc: 'weight-asc',
+  weightDesc: 'weight-desc',
+};
 
 export interface PokemonListOptions {
   filter?: FilterParam;
-  sort?: SortParam;
+  sort?: keyof typeof SortParam;
   interval?: ListInterval;
 }
 
@@ -293,7 +298,48 @@ export const PokemonListQuerySuffixLookup = {
 };
 
 export interface DecodedPokemonListUrl {
-  interval?: ListInterval;
+  interval?: { [key in keyof typeof IntervalQueryKeyLookup]: number };
   filter?: FilterParam;
-  sort?: SortParam;
+  sort?: keyof typeof SortParam;
 }
+
+
+
+export const SortQueryKeyLookup = {
+  nameAsc: 's-name-asc',
+  nameDesc: 's-name-desc',
+  heightAsc: 's-height-asc',
+  heightDesc: 's-height-desc',
+  weightAsc: 's-weight-asc',
+  weightDesc: 's-weight-desc',
+};
+
+export const IntervalQueryKeyLookup = {
+  interval: 'i-interval',
+  offset: 'i-offset',
+};
+
+export const FilterQueryParamLookup = {
+  typeList: 'f-type-list',
+  generationList: 'f-generation-list',
+  heightMin: 'f-height-min',
+  heightMax: 'f-height-max',
+  weightMin: 'f-weight-min',
+  weightMax: 'f-weight-max',
+  hpMin: 'f-hp-min',
+  hpMax: 'f-hp-max',
+  attackMin: 'f-attack-min',
+  attackMax: 'f-attack-max',
+  defenseMin: 'f-defense-min',
+  defenseMax: 'f-defense-max',
+  specialDefenseMin: 'f-special-defense-min',
+  specialDefenseMax: 'f-special-defense-max',
+  specialAttackMin: 'f-special-attack-min',
+  specialAttackMax: 'f-special-attack-max',
+  specialSpeedMin: 'f-special-speed-min',
+  specialSpeedMax: 'f-special-speed-max',
+  abilityList: 'f-ability-list',
+  moveList: 'f-move-list',
+  isDefault: 'f-is-default',
+  presentInGameList: 'f-presentInGame-list',
+};

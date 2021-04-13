@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { QueryParam } from 'src/isomorphic/query-param';
+import { environment } from '../../environments/environment';
+import { AllPokemonStats, IPokemon, PokemonListResponse } from '../../isomorphic/types';
 
-import { AllPokemonStats, DecodedPokemonListUrl, FilterParam, IPokemon, ListInterval, PokemonListResponse } from '../../isomorphic/types';
-import { encodePokemonListFilterQueryParam } from 'src/isomorphic/url-functions';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Observable, ErrorObserver } from 'rxjs';
 
 export interface QueryListInterval {
   offset: number;
@@ -41,11 +39,11 @@ export class PokedexApiService {
     return res.data;
   }
 
-  async getPokemonList(queries: DecodedPokemonListUrl): Promise<PokedexPage> {
-    // const params = _createParams(queries)
+  async getPokemonList(queryParams: {}): Promise<PokedexPage> {
     const options: AxiosRequestConfig = {
-      params: this._createParams(queries)
+      params: queryParams
     };
+
 
     const res = await this.httpClient.get(`pokemon`, options);
 
@@ -72,44 +70,8 @@ export class PokedexApiService {
 
     return res.data;
   }
-
-  _createParams({ interval, filter, sort }: DecodedPokemonListUrl): { [key: string]: any } {
-    const params: { [key: string]: any } = {};
-
-    if (interval) {
-      Object.entries(interval).forEach(([key, value]) => {
-        params[`i-${key}`] = value.toString();
-      });
-    }
-
-    if (filter) {
-      Object.entries(filter).forEach(([key, value]) => {
-
-        const filterParamKey = key as keyof FilterParam;
-        const encoded = encodePokemonListFilterQueryParam(filterParamKey, value);
-
-        if (encoded && encoded[1]) {
-          params[encoded[0]] = encoded[1];
-        }
-      });
-    }
-
-    return params;
-  }
-
-  _serializeFilter(filters?: FilterParam): string | null {
-    if (!filters) {
-      return null;
-    }
-
-    console.log({filters});
-
-    const queryArray: string[] = [];
-
-    if (filters.generationList) {
-      queryArray.push(`generations:[${filters.generationList.join(',')}]`);
-    }
-    return `${queryArray.join(':')}`;
-  }
-
 }
+function encodeQueryParams(queryParams: QueryParam<any>[]): any {
+  throw new Error('Function not implemented.');
+}
+

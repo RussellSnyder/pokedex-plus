@@ -1,8 +1,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { of } from 'rxjs';
 import { PokedexApiService } from './pokedex-api.service';
 
-fdescribe('PokedexApiService', () => {
+describe('PokedexApiService', () => {
   let service: PokedexApiService;
   let httpSpy: any;
 
@@ -42,7 +41,7 @@ fdescribe('PokedexApiService', () => {
         data: {}
       });
 
-      service.getPokemonList({});
+      service.getPokemonList([]);
       tick();
 
       expect(httpSpy.get).toHaveBeenCalledTimes(1);
