@@ -31,6 +31,7 @@ import { PokemonDetailHomeComponent } from './features/pokemon-detail/pokemon-de
 import { PokemonStatsComponent } from './shared/pokemon-stats/pokemon-stats.component';
 import { PokemonNomralizedStatsComponent } from './shared/pokemon-normalized-stats/pokemon-normalized-stats.component';
 import { HighchartsChartModule } from 'highcharts-angular';
+import { QueryParamService } from './services/query-param.service';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,7 @@ import { HighchartsChartModule } from 'highcharts-angular';
     MatTabsModule,
     HighchartsChartModule,
   ],
-  providers: [PokedexApiService, PokemonNavigatorService],
+  providers: [PokedexApiService, PokemonNavigatorService, QueryParamService],
   bootstrap: [AppComponent],
   exports: [PokemonOverviewComponent]
 })

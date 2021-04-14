@@ -25,6 +25,7 @@
     "bootstrap": "^4.6.0",
     "highcharts": "^9.0.1",
     "highcharts-angular": "^2.10.0",
+    "pokedex-plus-isomorphic": "github:RussellSnyder/pokedex-plus-isomorphic",
     "query-string": "^7.0.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",

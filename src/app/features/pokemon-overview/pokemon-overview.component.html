@@ -10,7 +10,7 @@
       <mat-form-field appearance="fill">
         <mat-label>Generation</mat-label>
         <mat-select
-          [(value)]="filter.generation"
+          [(value)]="filterQueryParamsCollection.activeQueryParams.generation"
           multiple
           (selectionChange)="handleChangeEvent(filterQueryParamsCollection, 'generation', $event)"
         >
@@ -23,7 +23,7 @@
       <mat-form-field appearance="fill">
         <mat-label>Type</mat-label>
         <mat-select
-          [(value)]="filter.type"
+          [(value)]="filterQueryParamsCollection.activeQueryParams.type"
           multiple
           (selectionChange)="handleChangeEvent(filterQueryParamsCollection, 'type', $event)"
         >
@@ -36,9 +36,9 @@
       <mat-form-field appearance="fill">
         <mat-label>Ability</mat-label>
         <mat-select
-          [(value)]="filter.abilityList"
+          [(value)]="filterQueryParamsCollection.activeQueryParams.ability"
           multiple
-          (selectionChange)="updateParameter('f-ability-list', $event)"
+          (selectionChange)="handleChangeEvent(filterQueryParamsCollection, 'ability', $event)"
         >
           <mat-option *ngFor="let ability of stats!.abilities | keyvalue" [value]="ability.key">
             {{ ability.key }}

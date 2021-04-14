@@ -1,7 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { PokemonSprite, PokemonSpriteSet } from 'src/isomorphic/types';
+import { Component, Input } from '@angular/core';
+import { PokemonSpriteSet } from 'pokedex-plus-isomorphic/src/types';
 
-/* tslint:disable */
 @Component({
   selector: 'app-pokemon-sprite-gallery',
   templateUrl: './pokemon-sprite-gallery.component.html',

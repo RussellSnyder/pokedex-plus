@@ -54,3 +54,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 - Chicken and egg: rework backend or model on frontend. Safer to add layer of abstraction -> Data layer
 
+
+- update isomphic package
+```
+npm-update pokedex-plus-isomorphic
+```

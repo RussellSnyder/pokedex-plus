@@ -1,20 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { IPokemon } from 'pokedex-plus-isomorphic/src/types';
 import { LoadingState } from 'src/app/models/loading-state.enum';
-import { IPokemon, PokemonSpriteSet } from 'src/isomorphic/types';
 import { PokedexApiService } from 'src/app/services/pokedex-api.service';
-
-type StringObject = {
-  [key: string]: string
-};
-
-type VersionsObject = {
-  [key: string]: { // generation
-    [key: string]: { // versions
-      [key: string]: StringObject
-    }
-  }
-};
 
 @Component({
   selector: 'app-pokemon-detail',

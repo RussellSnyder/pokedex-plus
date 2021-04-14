@@ -1,20 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSelectChange } from '@angular/material/select';
-import { Params } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { LoadingState } from 'src/app/models/loading-state.enum';
 import { PokedexApiService, PokedexPage } from 'src/app/services/pokedex-api.service';
-import { PokemonNavigatorService } from 'src/app/services/pokemon-navigator';
-import { QueryParamCollection, QueryParamMap } from 'src/isomorphic/query-param-collection';
-import { AllPokemonStats } from 'src/isomorphic/types';
-import {
-  FilterQueryParam,
-  filterQueryParamCollection
-} from './pokemon-overview.query-params';
+import { QueryParamService } from 'src/app/services/query-param.service';
 
-type QueryParamStateObject<T> = {
-  [key in keyof T]: any
-};
+import { QueryParamCollection } from 'pokedex-plus-isomorphic/src/models/query-param-collection';
+import { AllPokemonStats } from 'pokedex-plus-isomorphic/src/types';
+
+import {
+  filterQueryParamCollection,
+  intervalQueryParamCollection,
+  sortQueryParamCollection
+} from 'pokedex-plus-isomorphic/src/query-param-collections/pokemon.query-param-collection';
 
 @Component({
   selector: 'app-pokemon-overview',
@@ -31,6 +30,7 @@ export class PokemonOverviewComponent implements OnInit {
   LoadingState = LoadingState;
 
   pageEvent?: PageEvent;
+
   pagination = {
     length: 100,
     pageSize: 10,
@@ -38,27 +38,31 @@ export class PokemonOverviewComponent implements OnInit {
     pageIndex: 0,
   };
 
-  filter?: QueryParamStateObject<typeof FilterQueryParam>;
   filterQueryParamsCollection = filterQueryParamCollection;
+  sortQueryParamsCollection = sortQueryParamCollection;
+  intervalQueryParamsCollection = intervalQueryParamCollection;
 
-  constructor(private api: PokedexApiService, private nav: PokemonNavigatorService) {
-    // maybe there are some initial values
-    this.updateQueryParamState();
+  constructor(
+    private api: PokedexApiService,
+    private queryParamService: QueryParamService,
+    private activatedRoute: ActivatedRoute,
+    ) {
   }
 
   ngOnInit(): void {
-    this.nav.getQueryParamsFromUrl().subscribe(serializedQueryParams => {
+    this.activatedRoute.queryParams.subscribe((queryParams) => {
+      this.updateQueryParamCollections(queryParams);
 
-      this.updateQueryParamState(serializedQueryParams);
-
-      this.loadPokemon();
-      this.loadStats();
+      this.loadPokemonList();
     });
+
+    this.loadStats();
   }
 
-  updateQueryParamState(serializedQueryParams?: Params): void {
+  updateQueryParamCollections(serializedQueryParams?: Params): void {
     this.filterQueryParamsCollection.updateQueryParamsFromSerialized(serializedQueryParams);
-    this.filter = this.filterQueryParamsCollection.getLabelValueObject() as QueryParamStateObject<typeof FilterQueryParam>;
+    this.sortQueryParamsCollection.updateQueryParamsFromSerialized(serializedQueryParams);
+    this.intervalQueryParamsCollection.updateQueryParamsFromSerialized(serializedQueryParams);
   }
 
   handleChangeEvent(
@@ -72,30 +76,19 @@ export class PokemonOverviewComponent implements OnInit {
       queryParamCollection.updateQueryParam(label, value);
     }
 
-    this.updateQueryParamState();
     this.updateUrl();
+    this.loadPokemonList();
   }
 
   updateUrl(): void {
-    this.nav.updateUrlQueryParams({
-      ...this.filterQueryParamsCollection.getSerializedQueryParams()
+    this.queryParamService.updateUrlQueryParams({
+      ...this.filterQueryParamsCollection.getSerializedQueryParams(),
+      ...this.sortQueryParamsCollection.getSerializedQueryParams(),
+      ...this.intervalQueryParamsCollection.getSerializedQueryParams(),
     });
   }
-  // private setStateFromDecodedQueryParameters(decodedQueryParams: QueryParam<QueryParamType>[]): void {
-    // console.log(getGroupDecodedQueryParams<FilterQueryParamType>(decodedQueryParams, 'filter'));
 
-    // this.filter = getGroupDecodedQueryParams<QueryParamType>(decodedQueryParams, 'filter');
-    // this.sort = getGroupDecodedQueryParams<QueryParamType>(decodedQueryParams, 'sort');
-
-    // const interval = getGroupDecodedQueryParams<QueryParamType>(decodedQueryParams, 'interval');
-
-    // if (interval.length > 0) {
-    //   this.interval = interval;
-    // } else {
-    //   this.setDefaultInterval();
-    // }
-  // }
-
+  // TODO consume pokemon-control endpoint
   private async loadStats(): Promise<void> {
     try {
       this.stats = await this.api.getPokemonStats();
@@ -105,21 +98,15 @@ export class PokemonOverviewComponent implements OnInit {
     }
   }
 
-  private async loadPokemon(): Promise<void> {
+  private async loadPokemonList(): Promise<void> {
     this.pokemonLoadingState = LoadingState.Loading;
 
     try {
       this.pokedexPage = await this.api.getPokemonList({
-        // ...this.interval,
-        ...this.filterQueryParamsCollection.getSerializedQueryParamsWithValues()
-        // ...this.sort,
+        ...this.filterQueryParamsCollection.getSerializedQueryParamsWithValues(),
+        ...this.sortQueryParamsCollection.getSerializedQueryParamsWithValues(),
+        ...this.intervalQueryParamsCollection.getSerializedQueryParamsWithValues(),
       });
-
-      this.pagination = {
-        ...this.pagination,
-        length: this.pokedexPage.totalElements,
-        pageSize: this.pokedexPage.size,
-      };
 
       this.pokemonLoadingState = this.pokedexPage.pokemon.length > 0 ? LoadingState.DataAvailable : LoadingState.NoDataAvailable;
     } catch {
@@ -133,25 +120,6 @@ export class PokemonOverviewComponent implements OnInit {
     }
   }
 
-  // updateParameter(key: string, event: MatSelectChange): void {
-  //   const { value } = event;
-
-  //   // don't set the filter state here
-  //   // instead, change the url query param
-  //   // the subscription in OnInit will listen
-  //   // and update the filter
-  //   const queryParam = getQueryParamByEncodedKey(key);
-
-  //   if (!queryParam) {
-  //     console.error('could not find queryParam with encoded key', key);
-  //     return;
-  //   }
-
-  //   queryParam.setDecodedValue(value);
-
-  //   this.nav.updateUrlQueryParam(queryParam);
-  // }
-
   pagePokemonList(event: PageEvent): void {
     const {pageIndex, pageSize, length } = event;
 
@@ -164,15 +132,5 @@ export class PokemonOverviewComponent implements OnInit {
     // this.loadPokemon();
 
   }
-
-  // private setDefaultInterval(): void {
-  //   const offset = getQueryParamByEncodedKey('i-offset') as QueryParam<QueryParamType>;
-  //   offset.setDecodedValue(0);
-
-  //   const limit = getQueryParamByEncodedKey('i-limit') as QueryParam<QueryParamType>;
-  //   limit.setDecodedValue(10);
-
-  //   this.interval = [offset, limit];
-  // }
 }
 
