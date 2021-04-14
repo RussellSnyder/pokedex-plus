@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { PokemonSpriteSet } from 'pokedex-plus-isomorphic/src/types';
+import { PokemonSpriteSet } from 'pokedex-plus-isomorphic/lib/types';
 
 @Component({
   selector: 'app-pokemon-sprite-gallery',

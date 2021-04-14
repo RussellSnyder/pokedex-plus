@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import * as HighchartsMore from 'highcharts/highcharts-more';
-import { PokemonStats } from 'pokedex-plus-isomorphic/src/types';
+import { PokemonStats } from 'pokedex-plus-isomorphic/lib/types';
 
 // @ts-ignore
 HighchartsMore(Highcharts);

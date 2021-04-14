@@ -6,14 +6,14 @@ import { LoadingState } from 'src/app/models/loading-state.enum';
 import { PokedexApiService, PokedexPage } from 'src/app/services/pokedex-api.service';
 import { QueryParamService } from 'src/app/services/query-param.service';
 
-import { QueryParamCollection } from 'pokedex-plus-isomorphic/src/models/query-param-collection';
-import { AllPokemonStats } from 'pokedex-plus-isomorphic/src/types';
+import { QueryParamCollection } from 'pokedex-plus-isomorphic/lib/models/query-param-collection';
+import { AllPokemonStats } from 'pokedex-plus-isomorphic/lib/types';
 
 import {
   filterQueryParamCollection,
   intervalQueryParamCollection,
   sortQueryParamCollection
-} from 'pokedex-plus-isomorphic/src/query-param-collections/pokemon.query-param-collection';
+} from 'pokedex-plus-isomorphic/lib/query-param-collections/pokemon.query-param-collection';
 
 @Component({
   selector: 'app-pokemon-overview',

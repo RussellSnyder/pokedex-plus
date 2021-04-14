@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { QueryParam } from 'pokedex-plus-isomorphic/src/models/query-param';
-import { AllPokemonStats, IPokemon, PokemonListResponse } from 'pokedex-plus-isomorphic/src/types';
+import { QueryParam } from 'pokedex-plus-isomorphic/lib/models/query-param';
+import { AllPokemonStats, IPokemon, PokemonListResponse } from 'pokedex-plus-isomorphic/lib/types';
 import { environment } from '../../environments/environment';
 
 export interface QueryListInterval {

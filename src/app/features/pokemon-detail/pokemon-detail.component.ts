@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IPokemon } from 'pokedex-plus-isomorphic/src/types';
+import { IPokemon } from 'pokedex-plus-isomorphic/lib/types';
 import { LoadingState } from 'src/app/models/loading-state.enum';
 import { PokedexApiService } from 'src/app/services/pokedex-api.service';
 
